@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Update Post{% endblock %}
+
+{% block content %}
+<h1>Update Post</h1>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="text" class="form-label">Edit your post:</label>
+        <textarea class="form-control" id="text" name="text" rows="5">{{ post.text }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+<a href="{{ url_for('views.home') }}" class="btn btn-secondary mt-2">Cancel</a>
+{% endblock %}
