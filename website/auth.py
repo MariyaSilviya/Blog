@@ -38,28 +38,35 @@ def signup():
         email_exists = User.query.filter_by(email=email).first()
         username_exists = User.query.filter_by(username=username).first()
 
+        errors = []
+
         if email_exists:
-            flash('Email is already in use.', category='error')
-        elif username_exists:
-            flash('Username is already in use.', category='error')
-        elif password1 != password2:
-            flash('Password don\'t match!', category='error')
-        elif len(username) < 2:
-            flash('Username is too short.', category='error')
-        elif len(password1) < 4:
-            flash('Password is too short.', category='error')
-        elif len(email) < 4:
-            flash("Email is invalid.", category='error')
+            errors.append('Email is already in use.')
+        if username_exists:
+            errors.append('Username is already in use.')
+        if password1 != password2:
+            errors.append("Passwords don't match!")
+        if len(username) < 2:
+            errors.append('Username is too short.')
+        if len(password1) < 4:
+            errors.append('Password is too short.')
+        if len(email) < 4:
+            errors.append('Email is invalid.')
+
+        if errors:
+            for error in errors:
+                flash(error, category='error')
         else:
             new_user = User(email=email, username=username, password=generate_password_hash(
                 password1, method='pbkdf2:sha256'))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
-            flash('User created!')
+            flash('User created!', category='success')
             return redirect(url_for('views.home'))
 
     return render_template("signup.html", user=current_user)
+
 
 
 @auth.route("/logout")
